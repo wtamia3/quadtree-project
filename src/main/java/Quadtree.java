@@ -1,26 +1,29 @@
-package src.main.java;
-
 public class Quadtree {
     private Node root;
 
-    public Quadtree(int xMin, int xMax, int yMin, int yMax) {
-        this.root = new LeafNode(xMin, xMax, yMin, yMax); // Ensure LeafNode is available
+    public Quadtree() {
+        root = new LeafNode(-50, -50, 50, 50);
     }
 
-    public void insert(Rectangle rect) {
-        root.insert(rect);
+    public void insertRectangle(double x, double y, double l, double w) {
+        Rectangle rectangle = new Rectangle(x, y, l, w);
+        root.insertRectangle(rectangle);
     }
 
-    public void delete(Rectangle rect) {
-        root.delete(rect);
+    public void deleteRectangle(double x, double y) {
+        root.deleteRectangle(x, y);
     }
 
-    public Rectangle find(int x, int y) {
-        return root.find(x, y);
+    public void findRectangle(double x, double y) {
+        root.findRectangle(x, y);
     }
 
-    public void dump() {
-        root.dump(0); // Start dumping from root level
+    public void updateRectangle(double x, double y, double l, double w) {
+        Rectangle rectangle = new Rectangle(x, y, l, w);
+        // Logic to update the rectangle (change length and width)
+    }
+
+    public void dumpTree() {
+        root.dumpNode(0);
     }
 }
-
