@@ -1,43 +1,49 @@
-package src.main.java;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class LeafNode extends Node {
-    private List<Rectangle> rectangles = new ArrayList<>();
+    private List<Rectangle> rectangles;
 
-    public LeafNode(int xMin, int xMax, int yMin, int yMax) {
-        super(xMin, xMax, yMin, yMax);
+    public LeafNode(double xMin, double yMin, double xMax, double yMax) {
+        super(xMin, yMin, xMax, yMax);
+        rectangles = new ArrayList<>();
     }
 
     @Override
-    public void insert(Rectangle rect) {
-        if (rectangles.size() >= 5) {
-            // Convert this LeafNode into an InternalNode if capacity is exceeded
+    public void insertRectangle(Rectangle rectangle) {
+        if (rectangles.size() < 5) {
+            rectangles.add(rectangle);
         } else {
-            rectangles.add(rect);
+            // Split node and move rectangles to children
         }
     }
 
     @Override
-    public void delete(Rectangle rect) {
-        rectangles.remove(rect);
+    public void deleteRectangle(double x, double y) {
+        rectangles.removeIf(r -> r.getX() == x && r.getY() == y);
     }
 
     @Override
-    public Rectangle find(int x, int y) {
+    public void findRectangle(double x, double y) {
         for (Rectangle rect : rectangles) {
             if (rect.getX() == x && rect.getY() == y) {
-                return rect;
+                System.out.println("Rectangle at (" + x + ", " + y + "): " + rect);
+                return;
             }
         }
-        return null;
+        System.out.println("Nothing is at (" + x + ", " + y + ").");
     }
 
     @Override
-    public void dump(int level) {
+    public void dumpNode(int level) {
+        System.out.println("\t".repeat(level) + "Leaf Node (" + xMin + ", " + yMin + ") to (" + xMax + ", " + yMax + ")");
         for (Rectangle rect : rectangles) {
-            System.out.println("Level " + level + ": Rectangle at (" + rect.getX() + ", " + rect.getY() + ")");
+            System.out.println("\t".repeat(level + 1) + rect);
         }
     }
+
+    public boolean containsRectangle(double x, double y) {
+        return rectangles.stream().anyMatch(r -> r.getX() == x && r.getY() == y);
+    }
 }
+
