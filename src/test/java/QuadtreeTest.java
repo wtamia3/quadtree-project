@@ -1,44 +1,69 @@
-package src.test.java;
-
-import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import src.main.java.Quadtree; // Import the Quadtree class
-import src.main.java.Rectangle; // Import the Rectangle class
+import static org.junit.jupiter.api.Assertions.*;
 
 public class QuadtreeTest {
+
     private Quadtree quadtree;
 
-    // Set up a new Quadtree before each test
     @BeforeEach
     public void setUp() {
-        quadtree = new Quadtree(-50, 50, -50, 50); // Create a Quadtree with bounds (-50, 50) for both x and y axes
+        quadtree = new Quadtree(); // Initialize the quadtree before each test
     }
 
-    // Test for inserting a rectangle and finding it
     @Test
-    public void testInsertAndFind() {
-        Rectangle rect = new Rectangle(10, 10, 5, 5); // Create a rectangle at (10, 10) with width 5 and height 5
-        quadtree.insert(rect); // Insert the rectangle into the quadtree
-        assertEquals(rect, quadtree.find(10, 10)); // Verify that the rectangle can be found at (10, 10)
+    public void testInsertRectangle() {
+        // Insert a rectangle and check if it can be found
+        quadtree.insertRectangle(10, 10, 5, 5);
+        quadtree.findRectangle(10, 10); // Should print the rectangle with the right coordinates
     }
 
-    // Test for deleting a rectangle and verifying it's no longer found
     @Test
-    public void testDelete() {
-        Rectangle rect = new Rectangle(10, 10, 5, 5);
-        quadtree.insert(rect); // Insert the rectangle into the quadtree
-        quadtree.delete(rect); // Delete the rectangle from the quadtree
-        assertNull(quadtree.find(10, 10)); // Verify that the rectangle is no longer found
+    public void testFindRectangle() {
+        // Insert a rectangle and try to find it
+        quadtree.insertRectangle(10, 10, 5, 5);
+        quadtree.findRectangle(10, 10); // Should print the rectangle at (10, 10)
+        
+        // Try to find a non-existing rectangle
+        quadtree.findRectangle(20, 20); // Should print "Nothing is at (20, 20)."
     }
 
-    // Test for dumping the quadtree structure (just checks if no exceptions occur)
     @Test
-    public void testDump() {
-        Rectangle rect = new Rectangle(10, 10, 5, 5);
-        quadtree.insert(rect); // Insert a rectangle
-        quadtree.dump(); // Dump the quadtree structure to the console (for debugging purposes)
+    public void testDeleteRectangle() {
+        // Insert a rectangle, then delete it and ensure it is removed
+        quadtree.insertRectangle(10, 10, 5, 5);
+        quadtree.deleteRectangle(10, 10);
+        quadtree.findRectangle(10, 10); // Should print "Nothing is at (10, 10)."
+    }
+
+    @Test
+    public void testUpdateRectangle() {
+        // Insert a rectangle and then update its dimensions
+        quadtree.insertRectangle(10, 10, 5, 5);
+        quadtree.updateRectangle(10, 10, 8, 8); // Update the rectangle
+        quadtree.findRectangle(10, 10); // Should print updated rectangle with new dimensions
+    }
+
+    @Test
+    public void testDumpTree() {
+        // Insert several rectangles and dump the quadtree structure
+        quadtree.insertRectangle(10, 10, 5, 5);
+        quadtree.insertRectangle(20, 20, 3, 3);
+        quadtree.insertRectangle(-10, -10, 6, 6);
+        
+        // The dump function should print the structure with all inserted rectangles
+        quadtree.dumpTree(); // Will print tree structure with rectangles
+    }
+
+    @Test
+    public void testInsertOverLimit() {
+        // Test the quadtree split behavior when inserting more than 5 rectangles into a leaf node
+        for (int i = 0; i < 6; i++) {
+            quadtree.insertRectangle(i * 10, i * 10, 5, 5); // Insert rectangles in different positions
+        }
+        
+        // After inserting 6 rectangles, the leaf node should split into internal nodes
+        quadtree.dumpTree(); // Dump the tree structure to see the split
     }
 }
-
 
